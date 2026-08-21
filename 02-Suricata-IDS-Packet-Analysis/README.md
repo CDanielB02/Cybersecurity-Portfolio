@@ -1,81 +1,75 @@
-# Project 02: Network Intrusion Detection System (NIDS) Implementation & Packet Analysis
+# Network Intrusion Detection System (NIDS) & Deep Packet Inspection Lab
 
-## Executive Summary
-This project demonstrates the deployment, configuration, and validation of **Suricata Intrusion Detection System (IDS)** alongside **Wireshark** for live network monitoring and deep packet inspection (DPI). Operating within a virtualized enterprise subnet (`192.168.3.0/24`), custom signature rules were engineered to detect reconnaissance sweeps, aggressive TCP port scans, and web-tier application attack vectors in real time.
+## Project Overview
+This project demonstrates the architecture, deployment, and validation of an enterprise-grade Network Intrusion Detection System (NIDS) using **Suricata 8.0** and **Wireshark** on Linux.
 
----
-
-## Network Architecture & Lab Topology
-
-| Component | Role | OS / Platform | IP Address |
-| :--- | :--- | :--- | :--- |
-| **Defensive Host / Sensor** | NIDS & Packet Analyzer | Ubuntu Desktop 64-bit | `192.168.3.129` |
-| **Adversary Host** | Traffic Generator / Attacker | Kali Linux | `192.168.3.132` |
-| **Network Hypervisor** | Virtual Switch / NAT Gateway | VMware Workstation Pro | `192.168.3.0/24` |
+The primary objective is to engineer signature-based detection mechanisms capable of identifying multi-stage cyber attack workflows in real time. Operating within a segmented VMware test environment, custom detection rules were authored to catch passive discovery sweeps, active TCP SYN port scans, and Layer 7 web application directory traversal exploit attempts generated from an external Kali Linux attack station.
 
 ---
 
-## Phase 1: Custom IDS Signature Engineering
+## Network Architecture & Addressing
 
-Three tailored detection signatures were authored in `/etc/suricata/rules/local.rules` to capture reconnaissance, active port scans, and Layer 7 directory traversal attacks:
-
-```text
-# 1. ICMP Ping Sweep / Echo Probe Detection
-alert icmp any any -> $HOME_NET any (msg:"SCAN ICMP Ping Sweep / Probe Detected"; itype:8; sid:1000001; rev:1;)
-
-# 2. Nmap TCP SYN Port Scan Attempt
-alert tcp any any -> $HOME_NET any (msg:"SCAN Nmap TCP SYN Port Scan Attempt"; flags:S; threshold:type threshold, track by_src, count 5, seconds 2; sid:1000002; rev:1;)
-
-# 3. HTTP Suspicious Directory Traversal Probe
-alert tcp any any -> $HOME_NET 80 (msg:"ATTACK Possible Directory Traversal /etc/passwd Probe"; content:"/etc/passwd"; nocase; sid:1000003; rev:1;)
-Phase 2: Threat Simulation & Adversary Probing
-From the adversary station (192.168.3.132), synthetic network probes were launched sequentially against the monitored host:
-
-ICMP Discovery: Standard echo requests targeting the host gateway.
-
-Stealth Port Scan: nmap -sS -p 20-30 transmitting rapid TCP SYN packets across targeted port ranges.
-
-Application Exploit Payload: An HTTP GET parameter injection attempting an /etc/passwd local file inclusion (LFI) traversal.
-
-Phase 3: Real-Time Detection & Alert Generation
-Suricata monitored active network interface ens33 in live passive capture mode. As packets traversed the interface, signatures evaluated the headers and application payloads, writing alert records directly to /var/log/suricata/fast.log:
-
-Incident Log Breakdown:
-SID 1000001: Flagged Layer 3 ICMP echo requests originating from 192.168.3.132.
-
-SID 1000002: Rate-limiting threshold detected rapid SYN packet bursts within a 2-second sampling window.
-
-SID 1000003: Deep packet inspection parsed incoming HTTP streams on port 80 and matched the payload substring /etc/passwd.
-
-Phase 4: Deep Packet Inspection & Dissection (Wireshark)
-To validate the alert correlation, Wireshark was deployed to dissect the Layer 7 HTTP transaction:
-
-Frame Analysis: Packet capture on ens33 verified source 192.168.3.132 connecting to destination 192.168.3.129:80.
-
-Hex/ASCII Dissection: Packet data at offset 0x0040 verified the exact URI structure: GET /index.html?file=/etc/passwd HTTP/1.1.
-
-Security Takeaways & Hardening Insights
-Signature-Based Defense: Suricata's multi-threaded rule engine offers real-time visibility into active network scanning and perimeter probing.
-
-Threshold Tuning: Configuring threshold:type threshold suppresses alert fatigue while maintaining high-fidelity detection against port-scanning utilities.
-
-Defense-in-Depth: Combining perimeter IDS alerts with raw packet capture (PCAP) allows security analysts to perform root-cause verification during incident response triage.
-
-
-4. Scroll down to **Commit changes**, enter `Add Project 02 documentation`, and click **Commit changes**.
+| Node | Role | OS / Platform | Interface | IP / Subnet | Function / Purpose |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Defensive Sensor** | NIDS & Packet Analyzer | Ubuntu Desktop 64-bit | `ens33` | `192.168.3.129/24` | Real-time traffic inspection, Suricata engine, and PCAP analysis |
+| **Adversary Node** | Threat Generator / Attacker | Kali Linux | `eth0` | `192.168.3.132/24` | Reconnaissance, scanning, and payload injection source |
+| **Target Service** | Web Application Tier | Apache HTTP Server | `ens33:80` | `192.168.3.129:80` | Monitored HTTP endpoint receiving web requests |
+| **Virtual Switch** | Virtual Hypervisor Subnet | VMware Workstation Pro | `VMnet8` | `192.168.3.0/24` | Layer 2/3 virtual switching and NAT routing environment |
 
 ---
 
-**Step 3: Update the Main Repository README**
+## Technical Implementation & Visual Walkthrough
 
-1. Go back to your main repo landing page (`Cybersecurity-Portfolio`).
-2. Click the pencil icon on `README.md` to edit.
-3. Add **Project 02** to your project directory table so visitors can navigate right into it:
+### 1. Custom Suricata Signature Engineering
+![Custom Detection Rules](01-suricata-custom-rules.png)
 
-```markdown
-## Projects Portfolio
+* **Context:** Authoring tailored detection rules in `/etc/suricata/rules/local.rules` to detect reconnaissance, scanning, and application exploitation.
+* **Technical Breakdown:**
+  * **SID 1000001 (ICMP Detection):** `alert icmp any any -> $HOME_NET any (msg:"SCAN ICMP Ping Sweep / Probe Detected"; itype:8; sid:1000001; rev:1;)` monitors incoming ICMP Echo Requests (`itype:8`) targeting the protected internal subnet.
+  * **SID 1000002 (SYN Scan Detection):** `alert tcp any any -> $HOME_NET any (msg:"SCAN Nmap TCP SYN Port Scan Attempt"; flags:S; threshold:type threshold, track by_src, count 5, seconds 2; sid:1000002; rev:1;)` triggers when more than 5 TCP SYN packets are received from a single source within a 2-second sliding window, suppressing false alarms from standard single-port connections.
+  * **SID 1000003 (Directory Traversal Attack):** `alert tcp any any -> $HOME_NET 80 (msg:"ATTACK Possible Directory Traversal /etc/passwd Probe"; content:"/etc/passwd"; nocase; sid:1000003; rev:1;)` performs deep packet inspection across HTTP traffic destined for port 80, flagging case-insensitive string matches for `/etc/passwd`.
 
-| Project | Description | Tech Stack |
-| :--- | :--- | :--- |
-| [01-OPNsense-Enterprise-Segmentation](./01-OPNsense-Enterprise-Segmentation) | Enterprise firewall architecture with segmented DMZ, Management, and Internal LAN subnets. | OPNsense, VMware, Networking |
-| [02-Suricata-IDS-Packet-Analysis](./02-Suricata-IDS-Packet-Analysis) | Network Intrusion Detection
+---
+
+### 2. Adversary Threat Generation (Kali Linux)
+![Kali Linux Attack Execution](02-kali-attack-generation.png)
+
+* **Context:** Executing synthetic adversary activity from Kali Linux (`192.168.3.132`) against the target host (`192.168.3.129`).
+* **Technical Breakdown:**
+  * **ICMP Echo Probe:** `ping -c 2 192.168.3.129` verifies host reachability and generates baseline discovery traffic.
+  * **Stealth TCP SYN Scan:** `nmap -sS -p 20-30 192.168.3.129` sends uncompleted TCP handshake packets across ports 20 through 30, confirming port 80 is open while tripping the threshold rule.
+  * **Web Exploit Simulation:** `curl -s "http://192.168.3.129/index.html?file=/etc/passwd" > /dev/null` executes an HTTP GET request containing an arbitrary file read payload against the Apache web server.
+
+---
+
+### 3. Real-Time NIDS Alert Generation & Logging
+![Suricata Live Alert Log](03-suricata-live-alerts.png)
+
+* **Context:** Suricata monitoring active interface `ens33` in live passive capture mode, appending evaluated alert signatures to `/var/log/suricata/fast.log`.
+* **Technical Breakdown:**
+  * **Echo Request Tripped:** Suricata captured incoming ICMP Echo Requests from `192.168.3.132` and classified them under SID `1000001`.
+  * **Scan Threshold Exceeded:** Rapid SYN frames across ports 20–30 exceeded the 5-packet limit, generating alert entries for SID `1000002`.
+  * **Application Exploit Matched:** Deep packet inspection of the incoming stream on port 80 detected the `/etc/passwd` payload string, logging alert SID `1000003` with source port `54354` and destination port `80`.
+
+---
+
+### 4. Deep Packet Inspection & Dissection (Wireshark)
+![Wireshark Payload Dissection](04-wireshark-payload-analysis.png)
+
+* **Context:** Dissecting the raw packet stream in Wireshark to perform forensic verification of the exploit payload identified by Suricata.
+* **Technical Breakdown:**
+  * **Protocol Filtering:** Applied display filter `http` to isolate Layer 7 HTTP conversations on interface `ens33`.
+  * **Frame & Transport Headers:** Frame 11 validates source `192.168.3.132:38028` communicating over TCP to `192.168.3.129:80`.
+  * **ASCII/Hex Payload Confirmation:** Byte offset `0x0040` highlights the exact malicious payload string: `GET /index.html?file=/etc/passwd HTTP/1.1`, confirming positive signature correlation with zero packet loss.
+
+---
+
+## Security Takeaways & Hardening Strategies
+
+* **Threshold Tuning Against Alert Fatigue:** High-volume port scans can quickly flood security logging infrastructure. Utilizing `threshold:type threshold` with time-based intervals ensures meaningful alert generation without exhausting SIEM capacity.
+* **Payload-Aware Defense (L7 vs L4):** Traditional packet-filtering firewalls evaluate source, destination, and ports. NIDS signatures with deep packet inspection capabilities (`content:` modifiers) are critical to detecting application-layer attacks concealed within legitimate open service ports.
+* **Alert & PCAP Correlation:** Pairing rapid alert summaries (`fast.log`) with raw packet capture files (`.pcap`) accelerates incident triage, enabling SOC analysts to differentiate between harmless scanning and true positive exploitation.
+
+---
+
+## Repository Structure
