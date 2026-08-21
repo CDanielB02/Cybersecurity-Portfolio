@@ -1,4 +1,4 @@
-# 🛡️ Enterprise Network Segmentation & DMZ Firewall Lab
+# Enterprise Network Segmentation & DMZ Firewall Lab
 
 ## Project Overview
 This project demonstrates the architecture, deployment, and security verification of an isolated 3-tier virtual enterprise network. Built using **OPNsense Firewall**, **Ubuntu Desktop (Internal LAN)**, and **Linux Mint (DMZ Server)** within **VMware Workstation**, this lab implements stateful packet filtering, automated DHCP provisioning via Kea DHCP, zone routing, and Zero Trust micro-segmentation principles.
@@ -7,7 +7,7 @@ The primary objective is to enforce boundary isolation: allowing external servic
 
 ---
 
-## 📐 Network Architecture & Addressing
+## Network Architecture & Addressing
 
 | Zone | Interface | Segment Type | IP / Subnet | DHCP Scope | Function / Purpose |
 | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -17,7 +17,7 @@ The primary objective is to enforce boundary isolation: allowing external servic
 
 ---
 
-## 🔍 Technical Implementation & Visual Walkthrough
+## Technical Implementation & Visual Walkthrough
 
 ### 1. Virtual Network Topology & Architecture
 ![Virtual Network Topology](01-virtual-network-topology.png)
@@ -97,7 +97,7 @@ The primary objective is to enforce boundary isolation: allowing external servic
 
 ---
 
-## 🛠️ Core Skills Demonstrated
+## Core Skills Demonstrated
 * **Enterprise Firewall Engineering:** Deployment, interface assignment, and rule tuning in OPNsense.
 * **Network Segmentation & Zero Trust:** Designing DMZ boundaries to prevent lateral network pivoting.
 * **Infrastructure Services:** Configuring Kea DHCPv4 scopes and pools across multiple network segments.
