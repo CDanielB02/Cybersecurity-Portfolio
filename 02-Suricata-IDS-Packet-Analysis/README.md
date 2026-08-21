@@ -69,7 +69,3 @@ The primary objective is to engineer signature-based detection mechanisms capabl
 * **Threshold Tuning Against Alert Fatigue:** High-volume port scans can quickly flood security logging infrastructure. Utilizing `threshold:type threshold` with time-based intervals ensures meaningful alert generation without exhausting SIEM capacity.
 * **Payload-Aware Defense (L7 vs L4):** Traditional packet-filtering firewalls evaluate source, destination, and ports. NIDS signatures with deep packet inspection capabilities (`content:` modifiers) are critical to detecting application-layer attacks concealed within legitimate open service ports.
 * **Alert & PCAP Correlation:** Pairing rapid alert summaries (`fast.log`) with raw packet capture files (`.pcap`) accelerates incident triage, enabling SOC analysts to differentiate between harmless scanning and true positive exploitation.
-
----
-
-## Repository Structure
