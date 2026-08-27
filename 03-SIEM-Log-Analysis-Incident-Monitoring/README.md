@@ -1,3 +1,44 @@
+# Centralized SIEM Log Ingestion & Threat Monitoring Lab
+
+## Project Overview
+This project demonstrates the architecture, deployment, and operation of a Security Information and Event Management (SIEM) log parsing engine and centralized monitoring framework on Linux.
+
+The primary objective is to implement real-time log ingestion, regex-based security telemetry extraction, and severity classification to detect active threat campaigns. Using a multi-stage attack simulation executed from Kali Linux against an Ubuntu enterprise endpoint, the SIEM pipeline ingests authentication streams (`/var/log/auth.log`), classifies adversarial behaviors across the MITRE ATT&CK framework, and generates actionable triage summaries.
+
++------------------------+
+                       |    Adversary Station   |
+                       |    Kali Linux          |
+                       |    192.168.3.132       |
+                       +-----------+------------+
+                                   |
+               [ Recon / Brute-Force / Priv-Esc / Persistence ]
+                                   |
+                                   v
+                       +-----------+------------+
+                       |  Virtual Network       |
+                       |  NAT Gateway Subnet    |
+                       |  192.168.3.0/24        |
+                       +-----------+------------+
+                                   |
+                                   v
+                       +-----------+------------+
+                       |  Monitored Endpoint    |
+                       |  Ubuntu 64-bit         |
+                       |  192.168.3.129         |
+                       |  [OpenSSH + Syslog]    |
+                       +-----------+------------+
+                                   |
+                        (Live /var/log/auth.log)
+                                   |
+                                   v
+                       +------------------------+
+                       |  SOC SIEM Engine       |
+                       |  Custom Ingestion Core |
+                       |  [Parsing + Logwatch]  |
+                       +------------------------+
+
+---
+
 ## Network Architecture & Node Addressing
 
 | Node | Role | OS / Platform | Interface | IP / Subnet | Function / Purpose |
