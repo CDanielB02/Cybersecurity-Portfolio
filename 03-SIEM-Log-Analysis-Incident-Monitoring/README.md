@@ -5,7 +5,7 @@ This project demonstrates the architecture, deployment, and operation of a Secur
 
 The primary objective is to implement real-time log ingestion, regex-based security telemetry extraction, and severity classification to detect active threat campaigns. Using a multi-stage attack simulation executed from Kali Linux against an Ubuntu enterprise endpoint, the SIEM pipeline ingests authentication streams (`/var/log/auth.log`), classifies adversarial behaviors across the MITRE ATT&CK framework, and generates actionable triage summaries.
 
-+------------------------+
+                       +------------------------+
                        |    Adversary Station   |
                        |    Kali Linux          |
                        |    192.168.3.132       |
