@@ -26,7 +26,6 @@ The primary objective is to enforce boundary isolation: allowing external servic
 * **Technical Breakdown:**
   * Displays the core interface bindings: `em0` assigned to WAN (`192.168.3.130/24`), `em1` bound to LAN (`192.168.1.1/24`), and `em2` designated for the DMZ boundary.
   * Proves the Layer 2 hardware binding across separate virtual switches (LAN segments) prior to web management configuration.
-* **Interview Talking Point:** *"I established three isolated virtual network segments in VMware to simulate physical air-gapped network drops, terminating each into a dedicated virtual NIC on the FreeBSD-based OPNsense appliance."*
 
 ---
 
@@ -37,7 +36,6 @@ The primary objective is to enforce boundary isolation: allowing external servic
 * **Technical Breakdown:**
   * Maps physical device adapters (`em0`, `em1`, `em2`) to logical firewall zones (`WAN`, `LAN`, `DMZ`).
   * Shows all three network interfaces in an active (green plug) link-state status, enabling zone-based firewall rules to be applied independently per interface.
-* **Interview Talking Point:** *"Assigning dedicated interfaces allows the implementation of least-privilege security policies tailored specifically to the risk profile of each network segment."*
 
 ---
 
@@ -48,7 +46,6 @@ The primary objective is to enforce boundary isolation: allowing external servic
 * **Technical Breakdown:**
   * Defines the `172.16.10.0/24` subnet with an active dynamic leasing pool spanning `172.16.10.100` to `172.16.10.200`.
   * Ensures that newly deployed public-facing servers or services in the DMZ receive correct gateway (`172.16.10.1`) and DNS parameters automatically without manual static assignment.
-* **Interview Talking Point:** *"I configured OPNsense's modern Kea DHCP engine to manage dynamic address pools for the DMZ, maintaining clear subnet separation between internal clients and perimeter workloads."*
 
 ---
 
@@ -59,7 +56,6 @@ The primary objective is to enforce boundary isolation: allowing external servic
 * **Technical Breakdown:**
   * Implements an **Inverted Destination Rule**: `Pass` traffic where `Source = DMZ network` and `Destination = ! LAN network` (NOT LAN network).
   * This single stateful rule allows DMZ nodes to communicate with the outside Internet and resolve DNS while implicitly blocking any connection attempts targeting the internal private LAN (`192.168.1.0/24`).
-* **Interview Talking Point:** *"Rather than writing multiple individual permit and deny rules, I used an inverted destination match (`! LAN network`) on the DMZ interface. This allows full outbound Internet routing while maintaining strict micro-segmentation against lateral movement."*
 
 ---
 
@@ -70,7 +66,6 @@ The primary objective is to enforce boundary isolation: allowing external servic
 * **Technical Breakdown:**
   * Highlights red `block` entries triggered by the `Default deny / state violation rule`.
   * Demonstrates the firewall actively dropping ICMP packets originating from `172.16.10.x` attempting to access host `192.168.1.184` on the LAN.
-* **Interview Talking Point:** *"I validated rule enforcement using live packet analysis in the firewall diagnostics console, confirming that unauthorized cross-zone connection attempts were immediately dropped by the default-deny policy."*
 
 ---
 
@@ -82,7 +77,6 @@ The primary objective is to enforce boundary isolation: allowing external servic
   * **Gateway Reachability (`172.16.10.1`):** `0% packet loss` — Confirms local Layer 3 gateway routing is functioning.
   * **Outbound Internet (`8.8.8.8`):** `0% packet loss` — Confirms outbound NAT masquerading and external WAN access work.
   * **LAN Isolation Test (`192.168.1.184`):** `100% packet loss` — Confirms that lateral movement into the internal corporate LAN is strictly blocked.
-* **Interview Talking Point:** *"To verify boundary defense, I executed test probes from the DMZ host. The results proved the host could communicate upstream to the Internet while remaining completely isolated from the internal LAN."*
 
 ---
 
@@ -93,7 +87,6 @@ The primary objective is to enforce boundary isolation: allowing external servic
 * **Technical Breakdown:**
   * Pinging DMZ Host (`172.16.10.50`): `0% packet loss` with sub-millisecond latency.
   * Demonstrates asymmetric firewall permissions: internal LAN operators retain management reachability into the DMZ, while the DMZ cannot initiate traffic back into the LAN.
-* **Interview Talking Point:** *"This confirms proper asymmetric access control: internal network administrators can reach DMZ systems for maintenance and monitoring, but a compromised DMZ host cannot pivot back into internal assets."*
 
 ---
 
