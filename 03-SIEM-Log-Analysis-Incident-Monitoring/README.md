@@ -96,6 +96,6 @@ The primary objective is to implement real-time log ingestion, regex-based secur
 
 ## Security Takeaways & Hardening Strategies
 
-* **Centralized Telemetry Correlation:** Host-based event monitoring bridges the gap between network perimeter alerts and host-level actions. Even if network traffic is encrypted (e.g., SSH, TLS), host logging maintains full visibility into executed commands and account mutations.
+* **Centralized Telemetry Correlation:** Host-based event monitoring bridges the gap between network perimeter alerts and host-level actions. Even if network traffic is encrypted (SSH, TLS), host logging maintains full visibility into executed commands and account mutations.
 * **Automated Threat Detection:** Manual log inspection fails during high-velocity attacks. Continuous parsing pipelines with structured severity scoring allow SOC analysts to instantly isolate critical indicators of compromise (IOCs) from routine background noise.
 * **Defense-in-Depth Pipeline:** Combining firewall boundary controls (Lab 1) and NIDS packet inspection (Lab 2) with endpoint SIEM telemetry (Lab 3) provides end-to-end detection across the entire cyber kill chain.
