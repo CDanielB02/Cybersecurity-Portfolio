@@ -43,5 +43,5 @@ Aspiring Cybersecurity Analyst specializing in defensive security engineering, n
 
 ## Connect
 
-* **LinkedIn:** [https://www.linkedin.com/in/carlos-d-beltran-9124702b5/](https://linkedin.com)
-* **Email:** [cdaniel.beltran@gmail.com](mailto:your-email@example.com)
+* **LinkedIn:** [https://www.linkedin.com/in/carlos-d-beltran-9124702b5/]
+* **Email:** [cdaniel.beltran@gmail.com]
