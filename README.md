@@ -14,10 +14,10 @@ Aspiring Cybersecurity Analyst specializing in defensive security engineering, n
 
 | Domain | Technologies & Frameworks |
 | :--- | :--- |
-| **Network Security & Architecture** | OPNsense, Firewall Rule Configuration, Subnetting, DMZ Isolation, NAT Routing |
+| **Network Security & Architecture** | OPNsense, Firewall Rule Configuration, DMZ Isolation, NAT Routing |
 | **Intrusion Detection & Traffic Analysis** | Suricata NIDS, Wireshark, Deep Packet Inspection (DPI), PCAP Analysis, Nmap |
-| **SIEM & Security Telemetry** | Logwatch, Rsyslog, Authentication Auditing (`/var/log/auth.log`), Python Parsing Engines |
-| **Systems & Infrastructure** | Linux Administration (Ubuntu, Kali Linux), VMware Workstation Pro, Bash Scripting |
+| **SIEM & Security Telemetry** | Logwatch, Rsyslog, Authentication Auditing (`/var/log/auth.log`) |
+| **Systems & Infrastructure** | Linux Administration (Ubuntu, Kali Linux), VMware Workstation Pro, |
 | **Threat Vectors & Methodologies** | Port Scanning, Automated Credential Attacks (Hydra), Directory Traversal (L7), MITRE ATT&CK |
 
 ---
@@ -40,7 +40,6 @@ Aspiring Cybersecurity Analyst specializing in defensive security engineering, n
 * **Summary:** Built a real-time log parsing engine in Python to ingest host authorization streams. Simulated automated brute-force attacks and unauthorized persistence mechanisms, mapping log telemetry directly to severity scores and forensic audit summaries.
 
 ---
-
 ## Connect
 
 * **LinkedIn:** [https://www.linkedin.com/in/carlos-d-beltran-9124702b5/]
