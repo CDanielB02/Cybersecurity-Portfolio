@@ -31,7 +31,7 @@ Aspiring Cybersecurity Analyst specializing in defensive security engineering, n
 
 ### [02. Network Intrusion Detection System (NIDS) & Packet Analysis Lab](./02-Suricata-IDS-Packet-Analysis)
 * **Focus:** Threat Detection & Layer 7 Packet Dissection
-* **Tech Stack:** Wireshark, Nmap, Kali Linux
+* **Tech Stack:** Suricata, Wireshark, Kali Linux
 * **Summary:** Engineered custom detection signatures in Suricata to flag ICMP sweeps, TCP SYN port scans, and HTTP directory traversal attempts in real time. Validated alert fidelity by conducting deep packet inspection (DPI) in Wireshark.
 
 ### [03. Centralized SIEM Log Ingestion & Threat Monitoring Lab](./03-SIEM-Log-Analysis-Incident-Monitoring)
